@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 
 
 @Entity
-public class Order implements Serializable {
+public class FullOrder implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -26,11 +26,11 @@ public class Order implements Serializable {
     @ManyToMany(mappedBy = "orders", cascade = CascadeType.PERSIST)
     private List<Product> products;
 
-    public Order(String name) {
+    public FullOrder(String name) {
         this.name = name;
         this.products = new ArrayList();
     }
-    public Order(){
+    public FullOrder(){
         
     }
 

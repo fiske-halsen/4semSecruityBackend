@@ -1,7 +1,8 @@
 package utils;
 
 
-import entities.Order;
+import entities.FullOrder;
+import entities.FullOrder;
 import entities.Product;
 import entities.Role;
 import entities.User;
@@ -26,10 +27,9 @@ public class SetupTestUsers {
     User admin = new User("admin", "testadmin");
     User both = new User("user_admin", "testuseradmin");
     Product p = new Product("BMW", "M5", 2020, 20.99);
-    Order o = new Order("hej");
+    FullOrder o = new FullOrder("hej");
     
     
-
     if(admin.getUserPass().equals("test")||user.getUserPass().equals("test")||both.getUserPass().equals("test"))
       throw new UnsupportedOperationException("You have not changed the passwords");
 
