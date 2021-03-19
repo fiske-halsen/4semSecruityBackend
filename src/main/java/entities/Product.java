@@ -27,8 +27,6 @@ public class Product implements Serializable {
     public Product() {
     }
     
-    
-
     public Product(String brand, String model, int year, double price) {
         this.brand = brand;
         this.model = model;
@@ -82,10 +80,6 @@ public class Product implements Serializable {
         return orders;
     }
 
-    public void addOrder(Order order) {
-       if(order != null){
-           this.orders.add(order);
-       }
-    }
+ 
     
 }

@@ -21,15 +21,18 @@ public class Order implements Serializable {
     private Long id;
     @ManyToOne
     private User user;
+    private String name;
     
-    @ManyToMany(cascade = CascadeType.PERSIST, mappedBy = "orders")
+    @ManyToMany(mappedBy = "orders", cascade = CascadeType.PERSIST)
     private List<Product> products;
 
-    public Order() {
+    public Order(String name) {
+        this.name = name;
         this.products = new ArrayList();
     }
-    
-
+    public Order(){
+        
+    }
 
     public Long getId() {
         return id;
@@ -54,6 +57,7 @@ public class Order implements Serializable {
     public void addProduct(Product product) {
         if(product != null){
             this.products.add(product);
+            product.getOrders().add(this);
         }
     }
     
