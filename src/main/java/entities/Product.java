@@ -22,7 +22,7 @@ public class Product implements Serializable {
     private int year;
     private double price;
     @ManyToMany
-    private List<Order> orders;
+    private List<FullOrder> orders;
 
     public Product() {
     }
@@ -76,7 +76,7 @@ public class Product implements Serializable {
         this.price = price;
     }
 
-    public List<Order> getOrders() {
+    public List<FullOrder> getOrders() {
         return orders;
     }
 

@@ -39,7 +39,7 @@ public class User implements Serializable {
   private List<Role> roleList = new ArrayList<>();
   
   @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
-  private List<Order> orders;
+  private List<FullOrder> orders;
   
   public List<String> getRolesAsStrings() {
     if (roleList.isEmpty()) {
@@ -94,11 +94,11 @@ public class User implements Serializable {
     roleList.add(userRole);
   }
 
-    public List<Order> getOrders() {
+    public List<FullOrder> getOrders() {
         return orders;
     }
 
-    public void addOrder(Order order) {
+    public void addOrder(FullOrder order) {
        if(order != null){
            this.orders.add(order);
            order.setUser(this);
