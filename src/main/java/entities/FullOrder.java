@@ -21,18 +21,15 @@ public class FullOrder implements Serializable {
     private Long id;
     @ManyToOne
     private User user;
-    private String name;
+   
     
     @ManyToMany(mappedBy = "orders", cascade = CascadeType.PERSIST)
     private List<Product> products;
 
-    public FullOrder(String name) {
-        this.name = name;
+    public FullOrder() {
         this.products = new ArrayList();
     }
-    public FullOrder(){
-        
-    }
+    
 
     public Long getId() {
         return id;
