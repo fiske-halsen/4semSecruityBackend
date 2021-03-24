@@ -2,8 +2,9 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dto.OrderDTO;
 import entities.User;
-import facades.FacadeExample;
+import facades.OrderFacade;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -24,15 +25,12 @@ import javax.ws.rs.core.SecurityContext;
 import utils.EMF_Creator;
 import utils.SetupTestUsers;
 
-/**
- * @author lam@cphbusiness.dk
- */
-@Path("info")
+@Path("order")
 public class DemoResource {
-    
+
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final ExecutorService ES = Executors.newCachedThreadPool();
-    private static final FacadeExample FACADE = FacadeExample.getFacadeExample(EMF);
+    private static final OrderFacade FACADE = OrderFacade.getFacadeExample(EMF);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static String cachedResponse;
     @Context
@@ -55,7 +53,7 @@ public class DemoResource {
 
         EntityManager em = EMF.createEntityManager();
         try {
-            TypedQuery<User> query = em.createQuery ("select u from User u",entities.User.class);
+            TypedQuery<User> query = em.createQuery("select u from User u", entities.User.class);
             List<User> users = query.getResultList();
             return "[" + users.size() + "]";
         } finally {
@@ -80,48 +78,24 @@ public class DemoResource {
         String thisuser = securityContext.getUserPrincipal().getName();
         return "{\"msg\": \"Hello to (admin) User: " + thisuser + "\"}";
     }
-    
-    @Path("parrallel")
-    @GET
-    @Produces({MediaType.APPLICATION_JSON})
-    public String getStarWarsParrallel() throws InterruptedException, ExecutionException, TimeoutException {
-        String result = fetcher.StarWarsFetcher.responseFromExternalServersParrallel(ES, GSON);
-        cachedResponse = result;
-        return result;
+      @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("setupusers")
+    public void setUpUsers() {
+            SetupTestUsers.setUpUsers();
     }
 
-    @Path("cached")
     @GET
-    @Produces({MediaType.APPLICATION_JSON})
-    public String getStarWarsCached() throws InterruptedException, ExecutionException, TimeoutException {
-        return cachedResponse;
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("addorder")
+    @RolesAllowed("user")
+    public String addOrder(String orderDTO) {
+        /* Vi tager ikke params med, så vi undgår broken access control, 
+        alt information hentes fra den bruger der er logget ind, derudover
+        bruger vi role based access control @RolesAllowed
+        */
+        OrderDTO order = GSON.fromJson(orderDTO, OrderDTO.class);
+        return GSON.toJson(FACADE.makeOrder(order));
     }
-    
-    @Path("setupusers")
-    @GET
-    @Produces({MediaType.APPLICATION_JSON})
-    public void setUpUsers() {
-        SetupTestUsers.setUpUsers();
-    }
-    
-    @Path("planets")
-    @GET
-    @Produces({MediaType.APPLICATION_JSON})
-    public String getPlanets() throws InterruptedException, ExecutionException, TimeoutException, IOException {
-        String result = fetcher.StarWarsPlanetFetcher.responseFromExternalServersSequential(ES, GSON);
-        cachedResponse = result;
-        return result;
-    }
-    
-    @Path("countries")
-    @GET
-    @Produces({MediaType.APPLICATION_JSON})
-    public String getCountries() throws InterruptedException, ExecutionException, TimeoutException, IOException {
-        String result = fetcher.CountriesFetcher.responseFromExternalServersSequential(ES, GSON);
-        cachedResponse = result;
-        return result;
-    }
-    
-    
-    
+
 }
