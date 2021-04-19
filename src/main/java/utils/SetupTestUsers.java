@@ -34,8 +34,8 @@ public class SetupTestUsers {
         Product p = new Product("BMW", "M5", 2020, 20.99);
         FullOrder o = new FullOrder();
 
-        Product p2 = new Product("saddad", "M5sadsd", 202220, 20.9231329);
-        Product p3 = new Product("Mercedes", "AMG", 202220, 20.9231329);
+        Product p2 = em.find(Product.class, 1);
+        Product p3 = em.find(Product.class, 2);
         FullOrder o2 = new FullOrder();
 
      

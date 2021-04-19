@@ -2,6 +2,7 @@ package facades;
 
 import dto.OrderDTO;
 import dto.ProductDTO;
+import dto.ProductsDTO;
 import entities.FullOrder;
 import entities.Product;
 import entities.RenameMe;
@@ -77,5 +78,15 @@ public class OrderFacade {
         }
         return new OrderDTO(order);
     }
-    
+     
+     public ProductsDTO getProducts(){
+        EntityManager em = emf.createEntityManager();
+        List<Product> products;
+        try{
+             products = em.createQuery("SELECT p FROM Product p").getResultList();
+        }finally{  
+            em.close();
+        }
+        return new ProductsDTO(products);
+    }
 }

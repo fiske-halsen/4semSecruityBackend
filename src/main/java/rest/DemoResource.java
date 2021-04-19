@@ -3,6 +3,7 @@ package rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dto.OrderDTO;
+import dto.ProductsDTO;
 import entities.User;
 import facades.OrderFacade;
 import java.io.IOException;
@@ -45,7 +46,6 @@ public class DemoResource {
         return "{\"msg\":\"Hello anonymous\"}";
     }
 
-    //Just to verify if the database is setup
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("all")
@@ -96,6 +96,14 @@ public class DemoResource {
         */
         OrderDTO order = GSON.fromJson(orderDTO, OrderDTO.class);
         return GSON.toJson(FACADE.makeOrder(order));
+    }
+      @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("addorder")
+    //@RolesAllowed("user")
+    public String getProducts() {
+        ProductsDTO products = FACADE.getProducts();
+        return GSON.toJson(products);
     }
 
 }
