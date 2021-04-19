@@ -19,6 +19,7 @@
                  but also more verbose, log-info 
                  NOTE in production the values will be set to WARNING to report only potential serious problems
             -->
+      <property name="javax.persistence.sql-load-script-source" value="META-INF/script.sql"/>
       <property name="eclipselink.logging.level" value="INFO"/>
       <property name="eclipselink.logging.level.sql" value="INFO"/>
       <property name="eclipselink.logging.parameters" value="true"/>
