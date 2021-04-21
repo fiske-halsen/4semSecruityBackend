@@ -1,9 +1,9 @@
 package utils;
 
-import dto.OrderDTO;
-import entities.FullOrder;
-import entities.FullOrder;
-import entities.Product;
+import dto.rentalDTO;
+import entities.RentalOrder;
+import entities.RentalOrder;
+import entities.Car;
 import entities.Role;
 import entities.User;
 import facades.OrderFacade;
@@ -31,14 +31,11 @@ public class SetupTestUsers {
         
         User admin = new User("admin", "testadmin");
         User both = new User("user_admin", "testuseradmin");
-        Product p = new Product("BMW", "M5", 2020, 20.99);
-        FullOrder o = new FullOrder();
+        Car p = new Car("BMW", "M5", 2020, 20.99);
+        
 
-        Product p2 = em.find(Product.class, 1);
-        Product p3 = em.find(Product.class, 2);
-        FullOrder o2 = new FullOrder();
-
-     
+        Car c = new Car("BMW", "M5", 2020, 150);
+        RentalOrder o = new RentalOrder(10, 1500);
         
 
         if (admin.getUserPass().equals("test") || user.getUserPass().equals("test") || both.getUserPass().equals("test")) {
@@ -57,12 +54,13 @@ public class SetupTestUsers {
         em.persist(user);
         em.persist(admin);
         em.persist(both);
+        user.addRentalOrder(o);
+        o.setCar(c);
 
         em.getTransaction().commit();
-        user.addOrder(o2);
-        o2.addProduct(p2);
-        o2.addProduct(p3);
-        FACADE.makeOrder(new OrderDTO(o2));
+        
+        
+        //FACADE.makeOrder(new rentalDTO(o));
         System.out.println("PW: " + user.getUserPass());
         System.out.println("Testing user with OK password: " + user.verifyPassword("test"));
         System.out.println("Testing user with wrong password: " + user.verifyPassword("test1"));
