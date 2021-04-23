@@ -3,15 +3,17 @@ package entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 
 @Entity
-public class Product implements Serializable {
+public class Car implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -20,22 +22,21 @@ public class Product implements Serializable {
     private String brand;
     private String model;
     private int year;
-    private double price;
-    @ManyToMany
-    private List<FullOrder> orders;
+    private double pricePerDay;
+    @OneToMany(mappedBy = "car", cascade = CascadeType.PERSIST)
+    private List<RentalOrder> orders;
 
-    public Product() {
+    public Car() {
     }
-    
-    public Product(String brand, String model, int year, double price) {
+
+    public Car( String brand, String model, int year, double pricePerDay) {
         this.brand = brand;
         this.model = model;
         this.year = year;
-        this.price = price;
+        this.pricePerDay = pricePerDay;
         this.orders = new ArrayList();
     }
     
-
     public Long getId() {
         return id;
     }
@@ -68,15 +69,15 @@ public class Product implements Serializable {
         this.year = year;
     }
 
-    public double getPrice() {
-        return price;
+    public double getPricePerDay() {
+        return pricePerDay;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setPricePerDay(double price) {
+        this.pricePerDay = price;
     }
 
-    public List<FullOrder> getOrders() {
+    public List<RentalOrder> getOrders() {
         return orders;
     }
 

@@ -2,8 +2,8 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dto.OrderDTO;
-import dto.ProductsDTO;
+import dto.rentalDTO;
+import dto.carsDTO;
 import entities.User;
 import facades.OrderFacade;
 import java.io.IOException;
@@ -94,7 +94,7 @@ public class DemoResource {
         alt information hentes fra den bruger der er logget ind, derudover
         bruger vi role based access control @RolesAllowed
         */
-        OrderDTO order = GSON.fromJson(orderDTO, OrderDTO.class);
+        rentalDTO order = GSON.fromJson(orderDTO, rentalDTO.class);
         return GSON.toJson(FACADE.makeOrder(order));
     }
       @GET
@@ -102,7 +102,7 @@ public class DemoResource {
     @Path("addorder")
     //@RolesAllowed("user")
     public String getProducts() {
-        ProductsDTO products = FACADE.getProducts();
+        carsDTO products = FACADE.getProducts();
         return GSON.toJson(products);
     }
 

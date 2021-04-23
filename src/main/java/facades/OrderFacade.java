@@ -1,10 +1,10 @@
 package facades;
 
-import dto.OrderDTO;
-import dto.ProductDTO;
-import dto.ProductsDTO;
-import entities.FullOrder;
-import entities.Product;
+import dto.rentalDTO;
+import dto.carDTO;
+import dto.carsDTO;
+import entities.RentalOrder;
+import entities.Car;
 import entities.RenameMe;
 import entities.User;
 import java.util.List;
@@ -54,20 +54,20 @@ public class OrderFacade {
         
     }
     
-     public OrderDTO makeOrder(OrderDTO orderDTO){
+     public rentalDTO makeOrder(rentalDTO orderDTO){
         EntityManager em = emf.createEntityManager();
         User user;
-        FullOrder order;
+        RentalOrder order;
         
         try{
             em.getTransaction().begin();
              user = em.find(User.class, orderDTO.userName);
-            order = new FullOrder();
+            order = new RentalOrder();
             
-            user.addOrder(order);
+            user.addRentalOrder(order);
             
-            for (ProductDTO product : orderDTO.products) {
-                order.addProduct(new Product(product.brand, product.model, product.year, product.price));
+            for (carDTO product : orderDTO.products) {
+                order.addCar(new Car(product.brand, product.model, product.year, product.price));
             }
             em.merge(user);
             
@@ -76,17 +76,17 @@ public class OrderFacade {
         }finally{  
             em.close();
         }
-        return new OrderDTO(order);
+        return new rentalDTO(order);
     }
      
-     public ProductsDTO getProducts(){
+     public carsDTO getProducts(){
         EntityManager em = emf.createEntityManager();
-        List<Product> products;
+        List<Car> products;
         try{
              products = em.createQuery("SELECT p FROM Product p").getResultList();
         }finally{  
             em.close();
         }
-        return new ProductsDTO(products);
+        return new carsDTO(products);
     }
 }
