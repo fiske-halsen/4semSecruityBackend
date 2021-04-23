@@ -29,15 +29,12 @@ public class RentalOrder implements Serializable {
     private Date rentalDate;
     private double totalRentalPrice;
    
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Car car;
 
     public RentalOrder() {
     }
     
-    
-    
-
     public RentalOrder(int rentalDays, double totalRentalPrice) {
         this.rentalDays = rentalDays;
         this.totalRentalPrice = totalRentalPrice;
@@ -72,7 +69,7 @@ public class RentalOrder implements Serializable {
         return totalRentalPrice;
     }
 
-    public void setTotalRentalPrice(double totalRentalPrice) {
+    public void calcTotalRentalPrice(double totalRentalPrice) {
         this.totalRentalPrice = totalRentalPrice;
     }
    
@@ -88,7 +85,7 @@ public class RentalOrder implements Serializable {
         return car;
     }
 
-    public void setCar(Car car) {
+    public void addCar(Car car) {
         this.car = car;
     }
 

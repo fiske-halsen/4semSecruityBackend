@@ -3,7 +3,7 @@ package dto;
 
 import entities.Car;
 
-public class carDTO {
+public class CarDTO {
     
     public String brand;
     public String model;
@@ -11,7 +11,7 @@ public class carDTO {
     public double pricePerDay;
     
 
-    public carDTO(Car car) {
+    public CarDTO(Car car) {
         this.brand = car.getBrand();
         this.model = car.getModel();
         this.year = car.getYear();

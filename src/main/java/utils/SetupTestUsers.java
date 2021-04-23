@@ -1,6 +1,6 @@
 package utils;
 
-import dto.rentalDTO;
+import dto.RentalDTO;
 import entities.RentalOrder;
 import entities.RentalOrder;
 import entities.Car;
@@ -31,13 +31,9 @@ public class SetupTestUsers {
         
         User admin = new User("admin", "testadmin");
         User both = new User("user_admin", "testuseradmin");
-        Car p = new Car("BMW", "M5", 2020, 20.99);
-        
-
         Car c = new Car("BMW", "M5", 2020, 150);
         RentalOrder o = new RentalOrder(10, 1500);
         
-
         if (admin.getUserPass().equals("test") || user.getUserPass().equals("test") || both.getUserPass().equals("test")) {
             throw new UnsupportedOperationException("You have not changed the passwords");
         }
@@ -49,13 +45,14 @@ public class SetupTestUsers {
         admin.addRole(adminRole);
         both.addRole(userRole);
         both.addRole(adminRole);
+        user.addRentalOrder(o);
+        o.addCar(c);
         em.persist(userRole);
         em.persist(adminRole);
         em.persist(user);
         em.persist(admin);
         em.persist(both);
-        user.addRentalOrder(o);
-        o.setCar(c);
+        
 
         em.getTransaction().commit();
         

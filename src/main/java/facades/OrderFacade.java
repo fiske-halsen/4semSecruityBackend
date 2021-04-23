@@ -1,8 +1,10 @@
 package facades;
 
-import dto.rentalDTO;
-import dto.carDTO;
-import dto.carsDTO;
+import dto.RentalDTO;
+import dto.CarDTO;
+import dto.CarsDTO;
+import dto.CreateRentalDTO;
+import dto.RentalsDTO;
 import entities.RentalOrder;
 import entities.Car;
 import entities.RenameMe;
@@ -11,6 +13,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -54,21 +58,25 @@ public class OrderFacade {
         
     }
     
-     public rentalDTO makeOrder(rentalDTO orderDTO){
+     public RentalDTO makeReservation(CreateRentalDTO createRentalDTO){
         EntityManager em = emf.createEntityManager();
+        Car car;
         User user;
         RentalOrder order;
         
         try{
             em.getTransaction().begin();
-             user = em.find(User.class, orderDTO.userName);
-            order = new RentalOrder();
+            user = em.find(User.class, createRentalDTO.userName);
+            Query query = em.createQuery("SELECT c FROM Car c WHERE c.model = :model ");
+            query.setParameter("model", createRentalDTO.model);
+            car = (Car) query.getSingleResult();
             
+            double totalRentalPrice = createRentalDTO.rentalDays * car.getPricePerDay();
+           
+            order = new RentalOrder(createRentalDTO.rentalDays, totalRentalPrice);
+            order.addCar(car);
             user.addRentalOrder(order);
             
-            for (carDTO product : orderDTO.products) {
-                order.addCar(new Car(product.brand, product.model, product.year, product.price));
-            }
             em.merge(user);
             
             em.getTransaction().commit();
@@ -76,17 +84,29 @@ public class OrderFacade {
         }finally{  
             em.close();
         }
-        return new rentalDTO(order);
+        return new RentalDTO(order);
     }
      
-     public carsDTO getProducts(){
+     public CarsDTO getCars(){
         EntityManager em = emf.createEntityManager();
-        List<Car> products;
+        List<Car> cars;
         try{
-             products = em.createQuery("SELECT p FROM Product p").getResultList();
+             cars = em.createQuery("SELECT c FROM Car c").getResultList();
         }finally{  
             em.close();
         }
-        return new carsDTO(products);
+        return new CarsDTO(cars);
     }
+        public RentalsDTO getReservations(){
+        EntityManager em = emf.createEntityManager();
+        List<RentalOrder> rentalOrders;
+        try{
+             rentalOrders = em.createQuery("SELECT r FROM RentalOrder r").getResultList();
+        }finally{  
+            em.close();
+        }
+        return new RentalsDTO(rentalOrders);
+    }
+     
+          
 }
