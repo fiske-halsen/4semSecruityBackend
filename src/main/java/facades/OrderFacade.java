@@ -7,7 +7,6 @@ import dto.CreateRentalDTO;
 import dto.RentalsDTO;
 import entities.RentalOrder;
 import entities.Car;
-import entities.RenameMe;
 import entities.User;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -16,10 +15,7 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
-/**
- *
- * Rename Class to a relevant name Add add relevant facade methods
- */
+
 public class OrderFacade {
 
     private static OrderFacade instance;
@@ -46,32 +42,23 @@ public class OrderFacade {
         return emf.createEntityManager();
     }
     
-    //TODO Remove/Change this before use
-    public long getRenameMeCount(){
-        EntityManager em = emf.createEntityManager();
-        try{
-            long renameMeCount = (long)em.createQuery("SELECT COUNT(r) FROM RenameMe r").getSingleResult();
-            return renameMeCount;
-        }finally{  
-            em.close();
-        }
-        
-    }
     
      public RentalDTO makeReservation(CreateRentalDTO createRentalDTO){
         EntityManager em = emf.createEntityManager();
         Car car;
         User user;
         RentalOrder order;
-        
+        double totalRentalPrice;
         try{
             em.getTransaction().begin();
             user = em.find(User.class, createRentalDTO.userName);
+            System.out.println("user"+ user);
             Query query = em.createQuery("SELECT c FROM Car c WHERE c.model = :model ");
             query.setParameter("model", createRentalDTO.model);
             car = (Car) query.getSingleResult();
+            System.out.println("car" + car);
             
-            double totalRentalPrice = createRentalDTO.rentalDays * car.getPricePerDay();
+            totalRentalPrice = createRentalDTO.rentalDays * car.getPricePerDay();
            
             order = new RentalOrder(createRentalDTO.rentalDays, totalRentalPrice);
             order.addCar(car);

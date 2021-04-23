@@ -5,7 +5,6 @@
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <!--    <class>entities.RenameMe</class>-->
     <class>entities.Order</class>
-    <class>entities.RenameMe</class>
     <class>entities.Role</class>
     <class>entities.User</class>
     <class>entities.Car</class>

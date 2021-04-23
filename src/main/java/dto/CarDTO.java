@@ -20,14 +20,4 @@ public class CarDTO {
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 }
