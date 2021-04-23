@@ -23,8 +23,15 @@ public class CreateRentalDTO {
         this.model = order.getCar().getModel();
         this.year = order.getCar().getYear();
         this.pricePerDay = order.getCar().getPricePerDay();
-
     }
     
+     public CreateRentalDTO(String userName, int rentalDays, String brand, String model, int year, double pricePerDay) {
+        this.userName = userName;
+        this.rentalDays = rentalDays;
+        this.brand = brand;
+        this.model = model;
+        this.year = year;
+        this.pricePerDay = pricePerDay;
+    }
     
 }

@@ -1,7 +1,10 @@
 package facades;
 
+import dto.CreateRentalDTO;
+import dto.RentalDTO;
+import entities.Car;
 import utils.EMF_Creator;
-import entities.RenameMe;
+import entities.RentalOrder;
 import entities.Role;
 import entities.User;
 import javax.persistence.EntityManager;
@@ -16,22 +19,23 @@ import org.junit.jupiter.api.Test;
 import security.errorhandling.AuthenticationException;
 
 //Uncomment the line below, to temporarily disable this test
-@Disabled
-public class FacadeExampleTest {
+//@Disabled
+public class OrderFacadeTest {
 
     private static EntityManagerFactory emf;
-    private static UserFacade facade;
-    private static User user;
-    private static User admin;
-    private static User both;
-
-    public FacadeExampleTest() {
+    private static UserFacade userFacade;
+    private static OrderFacade orderFacade;
+    private static User u1, u2, admin, both;
+    private static Car c1, c2;
+    private static RentalOrder o;
+   
+    public OrderFacadeTest() {
     }
 
     @BeforeAll
     public static void setUpClass() {
        emf = EMF_Creator.createEntityManagerFactoryForTest();
-       facade = UserFacade.getUserFacade(emf);
+       userFacade = UserFacade.getUserFacade(emf);
     }
 
     @AfterAll
@@ -47,24 +51,34 @@ public class FacadeExampleTest {
         try {
             em.getTransaction().begin();
             //Delete existing users and roles to get a "fresh" database
+            em.createQuery("delete from RentalOrder").executeUpdate();
             em.createQuery("delete from User").executeUpdate();
             em.createQuery("delete from Role").executeUpdate();
-
+            em.createQuery("delete from Car").executeUpdate();
+            
             Role userRole = new Role("user");
             Role adminRole = new Role("admin");
-            user = new User("user", "test");
-            user.addRole(userRole);
+            u1 = new User("user", "test");
+            u2 = new User("user2", "test");
+            u1.addRole(userRole);
+            u2.addRole(userRole);
             admin = new User("admin", "test");
             admin.addRole(adminRole);
             both = new User("user_admin", "test");
             both.addRole(userRole);
             both.addRole(adminRole);
+            c1 = new Car("BMW", "M5", 2020, 150);
+            c2 = new Car("Hyundai", "i20", 2020, 125);
+            RentalOrder o = new RentalOrder(10, 1500);
+            u1.addRentalOrder(o);
+            o.addCar(c1);
             em.persist(userRole);
             em.persist(adminRole);
-            em.persist(user);
+            em.persist(u1);
+            em.persist(u2);
             em.persist(admin);
             em.persist(both);
-            //System.out.println("Saved test data to database");
+            em.persist(c2);
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -72,14 +86,22 @@ public class FacadeExampleTest {
     }
     @AfterEach
     public void tearDown() {
-//        Remove any data after each test was run
+ // Remove any data after each test was run
     }
 
-    // TODO: Delete or change this method 
+   
     @Test
     public void testVerifyUser() throws AuthenticationException {
-        User user = facade.getVeryfiedUser("admin", "test");
+        User user = userFacade.getVeryfiedUser("admin", "test");
         assertEquals("admin", admin.getUserName());
+    }
+    
+    @Test
+    public void testMakeReservations() throws AuthenticationException {
+        RentalDTO rentalDTO = orderFacade.makeReservation(new CreateRentalDTO(u2.getUserName(), 8, c2.getBrand(), c2.getModel(), c2.getYear(), c2.getPricePerDay()));
+        System.out.println(rentalDTO);
+        double expRentalPrice = 1000;
+        assertEquals(expRentalPrice, rentalDTO.totalRentalPrice, "Expects the total rentalprice to be 1000");
     }
 
 }
