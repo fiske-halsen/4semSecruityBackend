@@ -1,7 +1,10 @@
 package facades;
 
+import dto.CarDTO;
+import dto.CarsDTO;
 import dto.CreateRentalDTO;
 import dto.RentalDTO;
+import dto.RentalsDTO;
 import entities.Car;
 import utils.EMF_Creator;
 import entities.RentalOrder;
@@ -9,6 +12,8 @@ import entities.Role;
 import entities.User;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,10 +56,11 @@ public class OrderFacadeTest {
         try {
             em.getTransaction().begin();
             //Delete existing users and roles to get a "fresh" database
-            em.createQuery("delete from RentalOrder").executeUpdate();
-            em.createQuery("delete from User").executeUpdate();
-            em.createQuery("delete from Role").executeUpdate();
-            em.createQuery("delete from Car").executeUpdate();
+            em.createNativeQuery("DELETE FROM RENTALORDER").executeUpdate();
+            em.createNativeQuery("DELETE FROM CAR").executeUpdate();
+            em.createNativeQuery("DELETE FROM user_roles").executeUpdate();
+            em.createNativeQuery("DELETE FROM roles").executeUpdate();
+            em.createNativeQuery("DELETE FROM users").executeUpdate();
             
             Role userRole = new Role("user");
             Role adminRole = new Role("admin");
@@ -69,7 +75,7 @@ public class OrderFacadeTest {
             both.addRole(adminRole);
             c1 = new Car("BMW", "M5", 2020, 150);
             c2 = new Car("Hyundai", "i20", 2020, 125);
-            RentalOrder o = new RentalOrder(10, 1500);
+            o = new RentalOrder(10, 1500);
             u1.addRentalOrder(o);
             o.addCar(c1);
             em.persist(userRole);
@@ -98,10 +104,26 @@ public class OrderFacadeTest {
     
     @Test
     public void testMakeReservations() throws AuthenticationException {
-        RentalDTO rentalDTO = orderFacade.makeReservation(new CreateRentalDTO(u2.getUserName(), 8, c2.getBrand(), c2.getModel(), c2.getYear(), c2.getPricePerDay()));
-        System.out.println(rentalDTO);
+        RentalDTO rentalDTO = orderFacade.makeReservation(new CreateRentalDTO("user2", 8, "Hyundai", "i20", 2020, 125));
         double expRentalPrice = 1000;
         assertEquals(expRentalPrice, rentalDTO.totalRentalPrice, "Expects the total rentalprice to be 1000");
     }
+    
+    @Test
+    public void testGetCars() {
+        CarsDTO cars = orderFacade.getCars();
+        assertEquals(2, cars.cars.size(), "Expects ");
+        assertThat(cars.cars, containsInAnyOrder(new CarDTO(c1)));
+    }
+    
+     @Test
+    public void testGetReservations() {
+        RentalsDTO rentals = orderFacade.getReservations();
+        assertEquals(1, rentals.rentalOrders.size(), "Expects ");
+        assertThat(rentals.rentalOrders, containsInAnyOrder(new RentalDTO(o)));
+    }
+    
+    
+    
 
 }
