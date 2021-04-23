@@ -2,17 +2,18 @@
 package dto;
 
 import entities.Car;
+import java.util.ArrayList;
 import java.util.List;
 
 
-public class carsDTO {
+public class CarsDTO {
     
     
-    public List<carDTO> products;
+    public List<CarDTO> cars = new ArrayList();
     
-    public carsDTO(List<Car> products){
-        for (Car product : products) {
-            this.products.add(new carDTO(product));
+    public CarsDTO(List<Car> products){
+        for (Car car : products) {
+            this.cars.add(new CarDTO(car));
         }
         
     }
