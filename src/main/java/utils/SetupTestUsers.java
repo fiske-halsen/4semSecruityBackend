@@ -26,12 +26,12 @@ public class SetupTestUsers {
         // This breaks one of the MOST fundamental security rules in that it ships with default users and passwords
         // CHANGE the three passwords below, before you uncomment and execute the code below
         // Also, either delete this file, when users are created or rename and add to .gitignore
-        // Whatever you do DO NOT COMMIT and PUSH with the real passwords
+        // Whatever you do DO NOT COMMIT and PUSH with the real passwords ggg
         User user = new User("user", "testuser");
         
         User admin = new User("admin", "testadmin");
         User both = new User("user_admin", "testuseradmin");
-        Car c = new Car("BMW", "M5", 2020, 150);
+        Car c = new Car("Kia", "Rio", 2013, 100);
         RentalOrder o = new RentalOrder(10, 1500);
         
         if (admin.getUserPass().equals("test") || user.getUserPass().equals("test") || both.getUserPass().equals("test")) {
