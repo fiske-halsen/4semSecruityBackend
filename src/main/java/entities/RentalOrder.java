@@ -28,6 +28,7 @@ public class RentalOrder implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date rentalDate;
     private double totalRentalPrice;
+  
    
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Car car;
@@ -39,6 +40,7 @@ public class RentalOrder implements Serializable {
         this.rentalDays = rentalDays;
         this.totalRentalPrice = totalRentalPrice;
         this.rentalDate = new Date();
+    
     }
 
     public Long getId() {

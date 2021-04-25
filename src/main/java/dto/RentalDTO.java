@@ -14,10 +14,12 @@ public class RentalDTO {
     public String model;
     public int year;
     public double pricePerDay;
+    public long id;
  
    
     
     public RentalDTO(RentalOrder order) {
+        this.id = order.getId();
         this.userName = order.getUser().getUserName();
         this.rentalDate = order.getRentalDate();
         this.rentalDays = order.getRentalDays();

@@ -76,7 +76,6 @@ public class OrderFacade {
         List<Car> cars;
         try {
             cars = em.createQuery("SELECT c FROM Car c").getResultList();
-            System.out.println(cars);
         } finally {
             em.close();
         }
@@ -93,5 +92,42 @@ public class OrderFacade {
         }
         return new RentalsDTO(rentalOrders);
     }
+    public RentalDTO deleteReservation(long id){
+        EntityManager em = emf.createEntityManager();
+        RentalOrder rentalOrder;
+        try {
+            rentalOrder = em.find(RentalOrder.class, id);
+            em.getTransaction().begin();
+            em.remove(rentalOrder);
+            em.getTransaction().commit();
+            return new RentalDTO(rentalOrder);
+        } finally {
+            em.close();
+        }
+        
+    }
+    
+    public RentalDTO editReservation(RentalDTO rentalDTO){
+        EntityManager em = emf.createEntityManager();
+        RentalOrder rentalOrder;
+        Car car;
+        try {
+            rentalOrder = em.find(RentalOrder.class, rentalDTO.id);
+            rentalOrder.setRentalDays(rentalDTO.rentalDays);    
+            Query query = em.createQuery("SELECT c FROM Car c WHERE c.model = :model ");
+            query.setParameter("model", rentalDTO.model);
+            car = (Car) query.getSingleResult();
+            rentalOrder.addCar(car);
+            em.getTransaction().begin();
+            em.merge(rentalOrder);         
+            em.getTransaction().commit();
+            return new RentalDTO(rentalOrder);
+        } finally {
+            em.close();
+        }
+        
+        
+    }
+    
 
 }

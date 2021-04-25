@@ -18,19 +18,22 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
 import utils.EMF_Creator;
-import utils.SetupTestUsers;
+//import utils.SetupTestUsers;
 
 @Path("order")
-public class DemoResource {
+public class RentalResource {
 
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final ExecutorService ES = Executors.newCachedThreadPool();
@@ -42,27 +45,6 @@ public class DemoResource {
 
     @Context
     SecurityContext securityContext;
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getInfoForAll() {
-        return "{\"msg\":\"Hello anonymous\"}";
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("all")
-    public String allUsers() {
-
-        EntityManager em = EMF.createEntityManager();
-        try {
-            TypedQuery<User> query = em.createQuery("select u from User u", entities.User.class);
-            List<User> users = query.getResultList();
-            return "[" + users.size() + "]";
-        } finally {
-            em.close();
-        }
-    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -81,12 +63,7 @@ public class DemoResource {
         String thisuser = securityContext.getUserPrincipal().getName();
         return "{\"msg\": \"Hello to (admin) User: " + thisuser + "\"}";
     }
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("setupusers")
-    public void setUpUsers() {
-            SetupTestUsers.setUpUsers();
-    }
+    
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -118,5 +95,24 @@ public class DemoResource {
         CarsDTO cars = FACADE.getCars();
         return GSON.toJson(cars);
     }
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("editreservation")
+    public String editReservation(String rentalDTO) {
+        RentalDTO editRentalDTO = GSON.fromJson(rentalDTO, RentalDTO.class);
+        RentalDTO editReservation = FACADE.editReservation(editRentalDTO);
+        return GSON.toJson(editReservation);
+    }
+    
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("deletereservation/{id}")
+    public String deleteReservation(@PathParam("id") long id){
+        RentalDTO deletedReservation = FACADE.deleteReservation(id);
+        return GSON.toJson(deletedReservation);
+    }
+    
+
 
 }
